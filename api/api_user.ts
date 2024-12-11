@@ -3,7 +3,7 @@ import { User } from "@/models/user/user";
 
 const BASE_URL = process.env.REACT_APP_API_URL + "/User";
 
-class UserService {
+export class UserService {
   /**
    * Récupérer tous les utilisateurs avec pagination
    * @param {number} page - Numéro de page
