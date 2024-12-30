@@ -57,7 +57,7 @@ export const { addProduct, removeProduct } = productSlice.actions;
 
 // Sélecteurs pour accéder à l'état des produits
 export const selectProducts = (state: RootState) => state.products.products;
-export const selectLoading = (state: RootState) => state.products.loading;
+export const selectLoading = (state: RootState) => state.products.status === 'loading';
 export const selectError = (state: RootState) => state.products.error;
 
 // Exportation du reducer

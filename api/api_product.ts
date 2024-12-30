@@ -2,7 +2,7 @@ import axios from "axios";
 import { Product } from "@/models/product/product";
 import { IProductService } from "@/api/interfaces/I_product_service";
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL + "/Product";
+const BASE_URL = process.env.REACT_APP_API_URL + "/Product";
 
 export class ProductService implements IProductService {
   /**

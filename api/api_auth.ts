@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL + "/Auth"; 
+const API_URL = process.env.REACT_APP_API_URL + "/Auth"; 
 
 // Interface pour représenter les informations de l'utilisateur
 interface UserDTO {

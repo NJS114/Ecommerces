@@ -1,7 +1,7 @@
 import { PaymentRequest } from './../models/payment/payment_request';
 import axios from 'axios';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL + "/Payment"; // URL de l'API pour le paiement
+const API_URL = process.env.REACT_APP_API_URL + "/Payment"; // URL de l'API pour le paiement
 
 
 

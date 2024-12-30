@@ -1,10 +1,7 @@
-import { BasketItemStatus } from '../Enums';
-import { Basket } from './basket';
 
-export interface BasketItem {
-    productId: string;
-    quantity: number;
+export interface CartItem {
+    id: number;
+    name: string;
     price: number;
-    status: BasketItemStatus;
-    basket: Basket | null; 
-}
+    quantity: number;
+  }

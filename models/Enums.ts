@@ -12,7 +12,11 @@ export enum BookStatus {
     Sold = 'Sold',
     Reserved = 'Reserved'
 }
-
+export enum TransactionType{
+    Purchase = 2,
+    Rental = 1,
+    Sale = 0,
+}
 export enum Category {
     Fiction = 'Fiction',
     NonFiction = 'NonFiction',
