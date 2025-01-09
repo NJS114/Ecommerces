@@ -8,4 +8,5 @@ export interface Product {
     price: number;
     stock: number;
     createdAt: Date;
+    image:string;
 }

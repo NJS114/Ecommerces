@@ -30,13 +30,14 @@ const BookFilter: React.FC<BookFilterProps> = ({ onFilterChange }) => {
   const [filterVisible, setFilterVisible] = useState<boolean>(false); // Pour afficher/masquer le menu de filtre
   const [searchQuery, setSearchQuery] = useState<string>(""); // Pour la barre de recherche
 
-  const handleCategoryChange = (e: React.ChangeEvent<FormControlElement>) => {
+ const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+
     const newCategory = e.target.value;
     setCategory(newCategory);
     onFilterChange({ category: newCategory, condition, priceMin, priceMax, transactionType, searchQuery });
   };
 
-  const handleConditionChange = (e: React.ChangeEvent<FormControlElement>) => {
+  const handleConditionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newCondition = e.target.value;
     setCondition(newCondition);
     onFilterChange({ category, condition: newCondition, priceMin, priceMax, transactionType, searchQuery });
@@ -54,13 +55,13 @@ const BookFilter: React.FC<BookFilterProps> = ({ onFilterChange }) => {
     onFilterChange({ category, condition, priceMin, priceMax: newPriceMax, transactionType, searchQuery });
   };
 
-  const handleTransactionTypeChange = (e: React.ChangeEvent<FormControlElement>) => {
+  const handleTransactionTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newTransactionType = e.target.value;
     setTransactionType(newTransactionType);
     onFilterChange({ category, condition, priceMin, priceMax, transactionType: newTransactionType, searchQuery });
   };
 
-  const handleSearchChange = (e: React.ChangeEvent<FormControlElement>) => {
+  const handleSearchChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSearchQuery(e.target.value);
     // Vous pouvez appeler onFilterChange ici pour filtrer selon la recherche en temps réel
     onFilterChange({ category, condition, priceMin, priceMax, transactionType, searchQuery: e.target.value });
@@ -76,7 +77,8 @@ const BookFilter: React.FC<BookFilterProps> = ({ onFilterChange }) => {
             placeholder="Rechercher..."
             className="mr-sm-5 w-50"  // Augmente la largeur de l'input
             value={searchQuery}
-            onChange={handleSearchChange}
+            onChange={(e) => handleSearchChange(e as unknown as React.ChangeEvent<HTMLSelectElement>)}
+            
           />
           <Button 
             variant="outline-primary" 
@@ -95,7 +97,7 @@ const BookFilter: React.FC<BookFilterProps> = ({ onFilterChange }) => {
               <Form>
                 <Form.Group controlId="categorySelect">
                   <Form.Label>Catégorie</Form.Label>
-                  <Form.Control as="select" value={category} onChange={handleCategoryChange}>
+                  <Form.Control as="select" value={category} onChange={(e) => handleCategoryChange(e as unknown as React.ChangeEvent<HTMLSelectElement>)}>
                     <option value="">Tous</option>
                     <option value="1">Fiction</option>
                     <option value="2">Science</option>
@@ -104,7 +106,7 @@ const BookFilter: React.FC<BookFilterProps> = ({ onFilterChange }) => {
 
                 <Form.Group controlId="conditionSelect">
                   <Form.Label>État</Form.Label>
-                  <Form.Control as="select" value={condition} onChange={handleConditionChange}>
+                  <Form.Control as="select" value={condition}onChange={(e) => handleConditionChange(e as unknown as React.ChangeEvent<HTMLSelectElement>)}>
                     <option value="">Tous</option>
                     <option value="1">Neuf</option>
                     <option value="2">Bon état</option>
@@ -123,7 +125,7 @@ const BookFilter: React.FC<BookFilterProps> = ({ onFilterChange }) => {
 
                 <Form.Group controlId="transactionTypeSelect">
                   <Form.Label>Type de transaction</Form.Label>
-                  <Form.Control as="select" value={transactionType} onChange={handleTransactionTypeChange}>
+                  <Form.Control as="select" value={transactionType} onChange={(e) => handleTransactionTypeChange(e as unknown as React.ChangeEvent<HTMLSelectElement>)}>
                     <option value="">Tous</option>
                     <option value={TransactionType.Purchase}>Achat</option>
                     <option value={TransactionType.Rental}>Location</option>

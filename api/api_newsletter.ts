@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // L'URL de l'API, change-la selon ton endpoint réel
-const API_URL = process.env.REACT_APP_API_URL +"/Newsletter";
+const API_URL = process.env.NEXT_PUBLIC_API_URL +"/Newsletter";
 
 interface NewsletterDTO {
   subject: string;

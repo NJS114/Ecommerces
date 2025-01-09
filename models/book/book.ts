@@ -13,7 +13,7 @@ export class Book {
     additionalImagePaths: string[];
     transactionType: TransactionType; 
     category: number; 
-    rentalPrice?: number; 
+    rentalPrice: number; 
   
     constructor(
       id: string,
@@ -28,7 +28,7 @@ export class Book {
       additionalImagePaths: string[],
       transactionType: TransactionType,  // Mettre ici TransactionType au lieu de number
       category: number,
-      rentalPrice?: number
+      rentalPrice: number
     ) {
       this.id = id;
       this.barcode = barcode;

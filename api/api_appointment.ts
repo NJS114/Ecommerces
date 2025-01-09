@@ -1,7 +1,7 @@
 import { Appointment } from './../models/appointment/appointment';
 import axios from 'axios';
 
-const BASE_URL = process.env.REACT_APP_API_URL + "/Appointment";  // URL de l'API
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL + "/Appointment";  // URL de l'API
 
 class AppointmentService {
   /**

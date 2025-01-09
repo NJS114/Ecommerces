@@ -4,8 +4,6 @@ import { User } from '@/models/user/user';  // Assurez-vous que le chemin est co
 import { UserState } from '@/models/user/user_state';
 import api_user from '@/api/api_user';
 
-
-
 // État initial
 const initialState: UserState = {
   users: [],
@@ -71,9 +69,8 @@ const userSlice = createSlice({
         state.status = 'loading';
         state.error = null;
       })
-      .addCase(fetchUsers.fulfilled, (state, action) => {
+      .addCase(fetchUsers.fulfilled, (state, action: PayloadAction<User[]>) => {
         state.status = 'succeeded';
-        state.users = action.payload;
       })
       .addCase(fetchUsers.rejected, (state, action) => {
         state.status = 'failed';

@@ -1,58 +1,107 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Book } from '@/models/book/book';
-import { Button, Row, Col, Container, Card } from 'react-bootstrap';
+import { useCartContext } from '@/components/cart/context/CartContext';
 import 'bootstrap/dist/css/bootstrap.min.css';
-
+import { BasketItem } from '@/models/cart/cart_basket-item';
+import { Button, Container, Row, Col } from 'react-bootstrap';
 
 interface BookDetailsProps {
   book: Book;
 }
 
 const BookDetails: React.FC<BookDetailsProps> = ({ book }) => {
+  const { addToCart, cartItems } = useCartContext();
+  const [loading, setLoading] = useState(false);
+
+  // Calcul du prix total
+  const calculateTotalPrice = () => {
+    return cartItems.reduce((total, item) => {
+      const itemPrice = item.price || 0;
+      const itemQuantity = item.quantity || 0;
+      return total + itemPrice * itemQuantity;
+    }, 0);
+  };
+
+  const handleAddToCart = async () => {
+    setLoading(true);
+    try {
+      if (!book.rentalPrice) {
+        console.error('Rental price is missing for this book:', book);
+        return;
+      }
+
+      const newItem: BasketItem = {
+        productId: book.id,
+        name: book.title,
+        description: book.synopsis,
+        price: book.rentalPrice,
+        quantity: 1,
+        totalPrice: book.rentalPrice,
+        status: 2,
+        imageUrl: "https://via.placeholder.com/300x400?text=Book+Image",
+        attributes: {
+          size: "N/A",
+          color: "N/A",
+        },
+      };
+
+      await addToCart(newItem);
+      alert(`"${book.title}" a été ajouté au panier !`);
+    } catch (error) {
+      console.error('Erreur lors de l’ajout au panier :', error);
+      alert('Une erreur est survenue. Veuillez réessayer.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <Container className="mt-5">
-      <Row className="d-flex flex-column flex-md-row align-items-center">
-        {/* Image du livre à gauche */}
-        <Col md={6} className="text-center mb-4 mb-md-0">
+      <Row className="align-items-center">
+        {/* Image du produit */}
+        <Col md={6} className="text-center">
           <img
             src={"https://via.placeholder.com/300x400?text=Book+Image"}
             alt={book.title}
             className="img-fluid rounded shadow"
-            style={{
-              maxHeight: '400px',
-              objectFit: 'cover',
-              borderRadius: '10px',
-              boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
-            }}
+            style={{ maxHeight: '400px', objectFit: 'cover' }}
           />
         </Col>
 
-        {/* Détails du livre à droite */}
+        {/* Détails du produit */}
         <Col md={6}>
-          <h1 className="fw-bold mb-3" style={{ color: '#6f4f37' }}>{book.title}</h1>
-          <h4 className="text-muted mb-4" style={{ color: '#9b7d5f' }}>{book.author}</h4>
+          <h1 className="fw-bold mb-3">{book.title}</h1>
+          <p className="text-muted">{book.author}</p>
 
-          <div className="my-4">
-            <p style={{ fontSize: '1.2rem' }}><strong>Édition :</strong> {book.edition}</p>
-            <p style={{ fontSize: '1.2rem' }}><strong>Publié le :</strong> {new Date(book.publicationDate).toLocaleDateString()}</p>
-            <p style={{ fontSize: '1.2rem' }}><strong>Synopsis :</strong> {book.synopsis}</p>
+          <div className="mt-4">
+            <h4 className="text-success fw-bold">Prix de location : {book.rentalPrice}€</h4>
+            <p>{book.synopsis}</p>
           </div>
 
-          <div className="my-4">
-            <h4 className="text-success fw-bold" style={{ fontSize: '1.5rem' }}>Prix de location : {book.rentalPrice}€</h4>
-          </div>
-
-          {/* Boutons d'action */}
-          <div className="d-flex gap-3 mt-4">
-            <Button variant="warning" size="lg" style={{ backgroundColor: '#d1a15b', borderColor: '#d1a15b' }}>
-              Louer ce livre
+          {/* Boutons Stripe */}
+          <div className="d-flex flex-column gap-3 mt-4">
+            <Button
+              variant="primary"
+              size="lg"
+              onClick={handleAddToCart}
+              disabled={loading}
+              style={{ backgroundColor: '#6772e5', border: 'none' }}
+            >
+              {loading ? 'Ajout en cours...' : 'Ajouter au panier'}
             </Button>
-            <Button variant="success" size="lg">
-              Acheter ce livre
+            <Button
+              variant="outline-primary"
+              size="lg"
+              style={{ color: '#6772e5', borderColor: '#6772e5' }}
+            >
+              Acheter maintenant (via Stripe)
             </Button>
           </div>
 
-          
+          {/* Total panier */}
+          <div className="mt-4">
+            <h4 className="fw-bold">Total du panier : {calculateTotalPrice()}€</h4>
+          </div>
         </Col>
       </Row>
     </Container>

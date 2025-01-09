@@ -1,5 +1,5 @@
-import { Order } from '../order/order';
-import { UserRole } from '../Enums';
+import { UserRole, UserStatus } from '../Enums';
+import { PaymentMethod } from '../payment/payment_method';
 
 export interface User {
     id: string;
@@ -7,11 +7,15 @@ export interface User {
     lastName?: string;
     email: string;
     password: string;
-    roles: UserRole;
+    status: UserStatus; 
     role: string;
     stripeAccountId?: string;
     bankAccountDetails?: string;
-    orders: Order[];
-    transactions: PaymentRequest[];
-    paymentHistory: PaymentResponse[];
+    address?: string; 
+    phoneNumber?: string; 
+    city?: string; 
+    postalCode?: string; 
+    booksForSaleOrRent?: string[]; 
+    transactions: PaymentMethod[]; 
+    paymentHistory?: PaymentResponse[];
 }

@@ -1,70 +1,72 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useEffect, useCallback } from 'react';
+import { BasketItem } from '@/models/cart/cart_basket-item';
 
-type CartItem = {
-  id: string;
-  name: string;
-  price: number;
-  quantity: number;
-};
-
-// Définir le type pour le contexte du panier
 type CartContextType = {
-  cartItems: CartItem[]; // Tableau des articles du panier
-  addToCart: (item: CartItem) => void;
+  cartItems: BasketItem[];
+  addToCart: (item: BasketItem) => void;
   removeFromCart: (id: string) => void;
   updateQuantity: (id: string, quantity: number) => void;
+  fetchCart: () => void;
+  loading: boolean;
 };
 
-// Créer le contexte avec un type par défaut
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
-type CartProviderProps = {
-  children: ReactNode;
-};
+export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [cart, setCart] = useState<BasketItem[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
-// Fournisseur du contexte
-export const CartProvider = ({ children }: CartProviderProps) => {
-  const [cart, setCart] = useState<CartItem[]>([]);
+  // Sauvegarde le panier dans localStorage
+  const saveCartLocally = useCallback((cart: BasketItem[]) => {
+    setCart(cart);
+    localStorage.setItem('cart', JSON.stringify(cart));
+  }, []);
+
+  // Récupère le panier depuis localStorage
+  const fetchCart = useCallback(() => {
+    setLoading(true);
+    const localCart = JSON.parse(localStorage.getItem('cart') || '[]');
+    if (Array.isArray(localCart)) {
+      setCart(localCart);
+    } else {
+      console.error('Le panier local n’est pas un tableau valide.');
+    }
+    setLoading(false);
+  }, []);
+
+  useEffect(() => {
+    fetchCart();
+  }, [fetchCart]);
 
   // Ajouter un article au panier
-  const addToCart = (item: CartItem) => {
-    setCart((prevCart) => {
-      const existingItem = prevCart.find((cartItem) => cartItem.id === item.id);
-      if (existingItem) {
-        // Met à jour la quantité si l'article existe déjà
-        return prevCart.map((cartItem) =>
-          cartItem.id === item.id
-            ? { ...cartItem, quantity: cartItem.quantity + item.quantity }
-            : cartItem
-        );
-      }
-      // Ajoute un nouvel article au panier
-      return [...prevCart, item];
-    });
+  const addToCart = (item: BasketItem) => {
+    const updatedCart = [...cart, item];
+    saveCartLocally(updatedCart);
   };
 
   // Supprimer un article du panier
   const removeFromCart = (id: string) => {
-    setCart((prevCart) => prevCart.filter((item) => item.id !== id));
+    const updatedCart = cart.filter((item) => item.productId !== id);
+    saveCartLocally(updatedCart);
   };
 
   // Mettre à jour la quantité d'un article
   const updateQuantity = (id: string, quantity: number) => {
-    setCart((prevCart) =>
-      prevCart.map((item) =>
-        item.id === id ? { ...item, quantity } : item
-      )
+    const updatedCart = cart.map((item) =>
+      item.productId === id ? { ...item, quantity } : item
     );
+    saveCartLocally(updatedCart);
   };
 
   return (
-    <CartContext.Provider value={{ cartItems: cart, addToCart, removeFromCart, updateQuantity }}>
+    <CartContext.Provider
+      value={{ cartItems: cart, addToCart, removeFromCart, updateQuantity,fetchCart, loading }}
+    >
       {children}
     </CartContext.Provider>
   );
 };
 
-// Hook personnalisé pour utiliser le contexte
 export const useCartContext = () => {
   const context = useContext(CartContext);
   if (!context) {

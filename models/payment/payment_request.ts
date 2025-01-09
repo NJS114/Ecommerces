@@ -4,7 +4,7 @@ export interface PaymentRequest {
     userId: string;
     amount: number;
     currency: Currency;
-    paymentMethodId: string;
+    paymentMethodId?: string;
     description: string;
-    token: string;
+    token: string | null;
 }

@@ -1,3 +1,4 @@
+import { BasketItem } from "@/models/cart/cart_basket-item";
 import axios from "axios";
 import https from "https";
 
@@ -29,7 +30,7 @@ export class BasketService {
    * @param {object} basketItem - Détails de l'article à ajouter
    * @returns {Promise<any>}
    */
-  async addToBasket(userId: string, basketItem:[]) {
+  async addToBasket(userId: string, basketItem:BasketItem) {
     try {
       const response = await axios.post(`${BASE_URL}/add-to-basket/${userId}`, basketItem);
       return response.data;

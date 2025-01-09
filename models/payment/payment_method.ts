@@ -1,6 +1,7 @@
 export interface PaymentMethod {
-    type: string;
-    card: Card | null;
+    id: string;
+    type: string; // Type de paiement, par exemple "card", "bank_transfer", etc.
+    card?: Card; // Informations spécifiques à la carte (null si ce n'est pas une carte)
 }
 
 export interface Card {
@@ -13,13 +14,13 @@ export interface Card {
 }
 
 export interface BillingAddress {
+    stripeResponse: StripeResponse;
     city: string;
     country: string;
     line1: string;
-    line2?: string;
+    line2: string;
     postalCode: string;
     state: string;
-    stripeResponse: StripeResponse;
 }
 
 export interface StripeResponse {

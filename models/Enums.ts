@@ -31,9 +31,9 @@ export enum Category {
 }
 
 export enum Currency {
-    EUR = 'eur',
-    USD = 'usd',
-    JPY = 'jpy'
+    EUR = 0,
+    USD = 1,
+    JPY = 2
 }
 
 export enum OrderStatus {
@@ -52,4 +52,11 @@ export enum UserRole {
     Buyer = 'Buyer',
     Seller = 'Seller',
     Admin = 'Admin'
+}
+export enum UserStatus {
+    Logged = "Logged",      
+    Pending = "Pending",   
+    Suspended = "Suspended",
+    Active = "Active",      
+    Inactive = "Inactive"  
 }

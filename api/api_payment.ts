@@ -1,60 +1,71 @@
 import { PaymentRequest } from './../models/payment/payment_request';
 import axios from 'axios';
 
-const API_URL = process.env.REACT_APP_API_URL + "/Payment"; // URL de l'API pour le paiement
+const API_URL = process.env.NEXT_PUBLIC_API_URL + "/Payment"; // URL de l'API pour le paiement
 
 
 
-class PaymentService {
-  // Effectuer un paiement
+export class PaymentService {
   static async makePayment(paymentRequest: PaymentRequest): Promise<any> {
     try {
-      const response = await axios.post(`${API_URL}/make-payment`, paymentRequest);
-      return response.data; // Renvoie les informations du paiement effectué (par exemple, statut, ID de transaction)
-    } catch (error) {
-      throw new Error(`Erreur lors du paiement : ${error}`);
+      const response = await axios.post(`${API_URL}/payment`, paymentRequest);
+      if (response.status === 200 && response.data.success) {
+        return response.data; 
+      } else {
+        throw new Error(response.data.errorMessage || 'Échec du paiement');
+      }
+    } catch (error: any) {
+      if (error.response) {
+        throw new Error(`Erreur serveur : ${error.response.data.errorMessage || error.message}`);
+      } else if (error.request) {
+        throw new Error('Erreur de connexion au serveur : Aucune réponse reçue');
+      } else {
+        throw new Error(`Erreur lors du paiement : ${error.message}`);
+      }
+    }
+  }
+  static async Payment(): Promise<any> {
+    try {
+      // Appel à l'API pour créer la session de paiement
+      const response = await axios.post(`${API_URL}/create-checkout-session`);
+  
+      if (response.status === 200 && response.data.url) {
+        // Rediriger l'utilisateur vers l'URL de Stripe Checkout pour finaliser le paiement
+        return response.data.url; 
+      } else {
+        throw new Error(response.data.errorMessage || 'Échec du paiement');
+      }
+    } catch (error: any) {
+      if (error.response) {
+        throw new Error(`Erreur serveur : ${error.response.data.errorMessage || error.message}`);
+      } else if (error.request) {
+        throw new Error('Erreur de connexion au serveur : Aucune réponse reçue');
+      } else {
+        throw new Error(`Erreur lors du paiement : ${error.message}`);
+      }
+    }
+  }
+  
+  static async makeCardPayment(paymentMethod: any): Promise<any> {
+    try {
+      const response = await axios.post(`${API_URL}/payment-card`, paymentMethod);
+      if (response.status === 200 && response.data.success) {
+        return response.data; // Retourner la réponse de paiement réussi
+      } else {
+        throw new Error(response.data.errorMessage || 'Échec du paiement par carte');
+      }
+    } catch (error: any) {
+      if (error.response) {
+        throw new Error(`Erreur serveur : ${error.response.data.errorMessage || error.message}`);
+      } else if (error.request) {
+        throw new Error('Erreur de connexion au serveur : Aucune réponse reçue');
+      } else {
+        throw new Error(`Erreur lors du paiement par carte : ${error.message}`);
+      }
     }
   }
 
-  // Effectuer un paiement récurrent
-  static async makeRecurringPayment(paymentRequest: PaymentRequest): Promise<any> {
-    try {
-      const response = await axios.post(`${API_URL}/make-recurring-payment`, paymentRequest);
-      return response.data; // Renvoie les informations du paiement récurrent
-    } catch (error) {
-      throw new Error(`Erreur lors du paiement récurrent : ${error}`);
-    }
-  }
-
-  // Vérifier l'état d'un paiement
-  static async checkPaymentStatus(paymentId: string): Promise<any> {
-    try {
-      const response = await axios.get(`${API_URL}/payment-status/${paymentId}`);
-      return response.data; // Renvoie l'état du paiement (par exemple, réussi, échoué)
-    } catch (error) {
-      throw new Error(`Erreur lors de la vérification du statut du paiement : ${error}`);
-    }
-  }
-
-  // Annuler un paiement
-  static async cancelPayment(paymentId: string): Promise<any> {
-    try {
-      const response = await axios.post(`${API_URL}/cancel-payment`, { paymentId });
-      return response.data; // Renvoie la réponse de l'annulation (par exemple, confirmation de l'annulation)
-    } catch (error) {
-      throw new Error(`Erreur lors de l'annulation du paiement : ${error}`);
-    }
-  }
-
-  // Traitement du remboursement d'un paiement
-  static async refundPayment(paymentId: string): Promise<any> {
-    try {
-      const response = await axios.post(`${API_URL}/refund-payment`, { paymentId });
-      return response.data; // Renvoie les informations du remboursement
-    } catch (error) {
-      throw new Error(`Erreur lors du remboursement : ${error}`);
-    }
-  }
+  
 }
 
 export default PaymentService;

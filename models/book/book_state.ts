@@ -1,11 +1,12 @@
 import { reactive } from "vue";
 import { Book } from "@/models/book/book";
 
-export const bookState = reactive({
-  books: [] as Book[],
-  selectedBook: null as Book | null,
-  loading: false,
-  error: null as string | null,
+// État de Book
+export const BookState = reactive({
+  books: [] as Book[], // Liste des livres
+  selectedBook: null as Book | null, // Livre sélectionné (si applicable)
+  status: 'idle' as 'idle' | 'loading' | 'succeeded' | 'failed', // Statut pour le chargement des données
+  error: null as string | null, // Erreur éventuelle
 });
 
 /**
@@ -13,33 +14,35 @@ export const bookState = reactive({
  */
 export const bookActions = {
   setBooks(books: Book[]) {
-    bookState.books = books;
+    BookState.books = books;
+    BookState.status = 'succeeded'; // Changer le statut après avoir récupéré les livres
   },
 
   addBook(book: Book) {
-    bookState.books.push(book);
+    BookState.books.push(book);
   },
 
   updateBook(updatedBook: Book) {
-    const index = bookState.books.findIndex((b) => b.id === updatedBook.id);
+    const index = BookState.books.findIndex((b) => b.id === updatedBook.id);
     if (index !== -1) {
-      bookState.books[index] = updatedBook;
+      BookState.books[index] = updatedBook;
     }
   },
 
   removeBook(bookId: string) {
-    bookState.books = bookState.books.filter((b) => b.id !== bookId);
+    BookState.books = BookState.books.filter((b) => b.id !== bookId);
   },
 
   setSelectedBook(book: Book | null) {
-    bookState.selectedBook = book;
+    BookState.selectedBook = book;
   },
 
   setLoading(isLoading: boolean) {
-    bookState.loading = isLoading;
+    BookState.status = isLoading ? 'loading' : 'idle'; // Modifier le statut selon l'état de chargement
   },
 
   setError(error: string | null) {
-    bookState.error = error;
+    BookState.error = error;
+    BookState.status = 'failed'; // Changer le statut en cas d'erreur
   },
 };

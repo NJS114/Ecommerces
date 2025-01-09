@@ -2,8 +2,11 @@ import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { ProductState } from '@/models/product/product_state';
 import { Product } from '@/models/product/product';
 import { RootState } from '@/redux/store';
+import { ProductService } from '@/api/api_product'; // Import du service
+import { IProductService } from '@/api/interfaces/I_product_service';
 
-
+// Instancier le service
+const productService: IProductService = new ProductService();
 
 // État initial
 const initialState: ProductState = {
@@ -12,13 +15,12 @@ const initialState: ProductState = {
   error: null,
 };
 
-// Action asynchrone pour récupérer les produits (exemple avec une API)
+// Action asynchrone pour récupérer les produits via le ProductService
 export const fetchProducts = createAsyncThunk<Product[]>(
   'products/fetchProducts',
   async () => {
-    const response = await fetch('/api/products'); // Remplacez par l'URL de votre API
-    const data = await response.json();
-    return data;
+    const products = await productService.getAllProducts();
+    return products;
   }
 );
 
@@ -60,5 +62,4 @@ export const selectProducts = (state: RootState) => state.products.products;
 export const selectLoading = (state: RootState) => state.products.status === 'loading';
 export const selectError = (state: RootState) => state.products.error;
 
-// Exportation du reducer
 export default productSlice.reducer;

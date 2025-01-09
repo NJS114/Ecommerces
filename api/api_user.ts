@@ -1,7 +1,7 @@
 import axios from "axios";
 import { User } from "@/models/user/user";
 
-const BASE_URL = process.env.REACT_APP_API_URL + "/User";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL + "/User";
 
 export class UserService {
   /**
